@@ -1,0 +1,15 @@
+"0","```r
+boot.ci(boot.out = res.boot, conf = 0.95, type = \"bca\")
+
+```"
+"1","BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 2000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = res.boot, conf = 0.95, type = \"bca\")
+
+Intervals : 
+Level       BCa          
+95%   ( 0.2479,  0.4100 )  
+Calculations and Intervals on Original Scale
+"

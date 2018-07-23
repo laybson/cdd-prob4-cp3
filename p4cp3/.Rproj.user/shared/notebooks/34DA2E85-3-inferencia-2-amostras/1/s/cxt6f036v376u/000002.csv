@@ -1,0 +1,9 @@
+"0","```r
+median.old = bootstrap(experiment, median(old), R = 2000) %>% 
+    CI.percentile(probs = c(.025, .975))
+median.old 
+
+```"
+"1","            2.5% 97.5%
+median(old)   83    90
+"

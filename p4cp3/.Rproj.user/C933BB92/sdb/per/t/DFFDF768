@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Análise MovieLens\"\ndate: 16/07/2018\nauthor: Laybson\noutput:\n  html_document:\n    df_print: paged\n    toc: yes\n    toc_float: yes\n  html_notebook:\n    toc: yes\n    toc_float: yes\n---\n\n```{r setup, echo=FALSE, warning=FALSE, message=FALSE}\nlibrary(here)\nlibrary(tidyverse)\nlibrary(boot)\nlibrary(resample) # para bootstrap\ntheme_set(theme_bw())\n```\n\n# Data Overview \n\n```{r, warning=FALSE}\nreadr::read_csv(here::here(\"data/movies.csv\"),\n                progress = FALSE,\n                col_types = cols(\n                      movieId = col_integer(),\n                      title = col_character(),\n                      genres = col_character()\n                    )) %>% \n  group_by(movieId) %>% \n  na.omit() %>%\n  ungroup() -> movies\n\nreadr::read_csv(here::here(\"data/ratings.csv\"),\n                progress = FALSE,\n                col_types = cols(\n                userId = col_integer(),\n                movieId = col_integer(),\n                rating = col_double()\n                )) %>%\n  na.omit() -> ratings\n```\n\n```{r}\ndplyr::inner_join(\n  movies,\n  ratings,\n  by=\"movieId\") -> data\n\n\ndata %>%\n  group_by(movieId) %>%\n  summarise(median_rating = median(rating),\n            prefered = median_rating > 3.5) -> summarised\n\ndplyr::inner_join(\n  summarised,\n  data,\n  by=\"movieId\") -> data\n\ndata %>%\n    group_by(userId) %>%\n    summarise(median_rating = median(rating),\n            crabby = median_rating <= 3.5,\n            num_ratings = n(),\n            dispersion = var(rating)) -> per_user\n\ndplyr::inner_join(\n  per_user,\n  data,\n  by=\"userId\") -> data\n\ndata %>%\n  glimpse()\n```\n\n\n\n```{r}\ndata %>%\n  group_by(movieId) %>%\n  slice(1) %>%\n  ggplot(aes(rating)) +\n  geom_bar() +\n  labs(x=\"Avaliação\",\n       y=\"Frequência\")\n```\n\nOlhando valores absolutos nas avaliações, vemos que que elas concentram-se em maioria entre 3 e 4 pontos. \n\n\nPara nossa análise, iremos focar como se comportam as avaliações dos usuários.\n\n## Há relação entre a quantidade de avaliações de usuários específicos com a dispersão de notas que ele dá?\n\n```{r}\nper_user$pc <- predict(prcomp(~log(num_ratings)+dispersion, per_user))[,1]\n\nper_user %>%\n    ggplot(aes(log(num_ratings), dispersion, color = pc)) +\n    geom_point(shape = 16, size = 1, show.legend = FALSE, alpha = .8) +\n    theme_minimal() +\n    geom_smooth(method=lm) +\n    scale_color_gradient(low = \"#0091ff\", high = \"#f0650e\") +\n    labs(x=\"Número de avaliações (log)\",\n       y=\"Variância das notas\")\n```\n\nVendo o gráfico de dispersão, não vemos uma tendência clara entre o número de avaliações e a dispersão das notas\n\nAnalisando o intervalo de confiança temos:",
+    "created" : 1531789014611.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "582752281",
+    "id" : "DFFDF768",
+    "lastKnownWriteTime" : 1532285760,
+    "last_content_update" : 1532285760899,
+    "path" : "~/ad1/p4cp3/4back.Rmd",
+    "project_path" : "4back.Rmd",
+    "properties" : {
+        "last_setup_crc32" : "",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

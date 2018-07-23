@@ -1,0 +1,34 @@
+"0","```r
+b = bootstrap(experiment, mean(news))
+mean.news = CI.bca(b, probs = c(.025, .975))
+mean.news
+```"
+"1","               2.5%    97.5%
+mean(news) 31.11953 34.33332
+"
+"0","```r
+b = bootstrap(experiment, mean(old))
+mean.old = CI.bca(b, probs = c(.025, .975))
+mean.old
+```"
+"1","              2.5%   97.5%
+mean(old) 96.28906 103.378
+"
+"0","```r
+b = bootstrap(experiment, median(old))
+median.old = CI.percentile(b, probs = c(.025, .975))
+median.old 
+```"
+"1","            2.5% 97.5%
+median(old)   83    90
+"
+"0","```r
+df = data.frame(rbind(mean.news, 
+                      median.news,
+                      mean.old,
+                      median.old))
+df$medida = row.names(df)
+df %>% 
+  ggplot(aes(x = medida, ymin = X2.5., ymax = X97.5.)) + 
+  geom_errorbar(width = .2)
+```"
