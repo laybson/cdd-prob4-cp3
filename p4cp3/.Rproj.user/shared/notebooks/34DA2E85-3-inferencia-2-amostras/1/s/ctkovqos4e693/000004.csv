@@ -1,3 +1,0 @@
-"0","```r
-lastfm %>% ggplot(aes(old)) + geom_histogram(binwidth = 10)
-```"

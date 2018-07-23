@@ -1,7 +1,0 @@
-"0","data %>%"
-"0","  group_by(movieId) %>%"
-"0","  slice(1) %>%"
-"0","  ggplot(aes(rating)) +"
-"0","  geom_bar() +"
-"0","  labs(x=""Avaliação"","
-"0","       y=""Frequência"")"

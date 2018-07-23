@@ -94,7 +94,35 @@ Olhando valores absolutos nas avaliações, vemos que que elas concentram-se em 
 
 Para nossa análise, iremos focar como se comportam as avaliações dos usuários.
 
+## Algum gênero específico tende a possuir avaliações muito mais altas que os outros?
+
+```{r}
+movies_2 <- movies %>%
+    mutate(isComedy = grepl("Comedy", genres))
+
+movies_3 <- left_join(movies_2, ratings %>%
+                        group_by(movieId) %>%
+                        summarize(median = median(rating))
+                    )
+
+median(movies_3$median)
+```
+
+```{r}
+boot_comedy <- bootstrap(movies_3 %>%
+                        filter(isComedy, !is.na(median)), median(median))
+
+comendy_CI <- CI.percentile(boot_comedy)
+
+not_boot_comedy <- bootstrap(movies_3 %>%
+                        filter(!isComedy, !is.na(median)), median(median))
+
+not_comendy_CI <- CI.percentile(not_boot_comedy)
+
+```
+
 ## Há relação entre a quantidade de avaliações de usuários específicos com a dispersão de notas que ele dá?
+
 
 ```{r}
 per_user$pc <- predict(prcomp(~log(num_ratings)+dispersion, per_user))[,1]
